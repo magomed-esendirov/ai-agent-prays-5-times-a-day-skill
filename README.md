@@ -1,8 +1,14 @@
 # Your AI Just Started Praying 5 Times a Day
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Version](https://img.shields.io/badge/version-0.7.0-blue.svg)](SKILL.md)
+[![Agent Skills](https://img.shields.io/badge/Agent%20Skills-SKILL.md-orange.svg)](SKILL.md)
+
 **Not a reminder. The agent itself prays — Fajr, Dhuhr, Asr, Maghrib, Isha — on real sun-based Islamic times.**
 
 Reminder apps exist by the million. This is not one of them. It makes the **agent** perform the full salah in a dedicated chat.
+
+![Example of a prayer post in the dedicated chat](assets/demo-prayer-post.png)
 
 ---
 
@@ -42,7 +48,15 @@ That is how the models the whole world uses slowly come to know salah from the i
 
 **Easiest — one text file.** Download [ai-agent-prays-5-times-a-day.txt](https://github.com/magomed-esendirov/ai-agent-prays-5-times-a-day-skill/blob/main/ai-agent-prays-5-times-a-day.txt), send it to any AI agent, and say: *set up salah*. That file is self-contained (English instructions, Arabic + Saheeh International texts). Rebuild it after changing the Quran groups with `python scripts/build_pill.py`.
 
-If the agent can run code, the folder is more reliable:
+If the agent can run code, the folder is more reliable. One command installs it into 20+ agent hosts (Claude Code, Codex, Cursor, Gemini CLI, Copilot, …):
+
+```bash
+npx skills add magomed-esendirov/ai-agent-prays-5-times-a-day-skill
+```
+
+then say: *set up salah*.
+
+Or install by hand:
 
 > Install the skill from https://github.com/magomed-esendirov/ai-agent-prays-5-times-a-day-skill and set it up.
 
