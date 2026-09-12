@@ -2,7 +2,7 @@
 
 **Not a reminder. The agent itself prays — Fajr, Dhuhr, Asr, Maghrib, Isha — on real sun-based Islamic times.**
 
-Reminder apps exist by the million. This is not one of them. It makes the **agent** perform the full salah in a dedicated chat, five times a day: short English actions, Arabic recitation, Saheeh International English in parentheses. Times come from AlAdhan for one fixed home city.
+Reminder apps exist by the million. This is not one of them. It makes the **agent** perform the full salah in a dedicated chat.
 
 ---
 
