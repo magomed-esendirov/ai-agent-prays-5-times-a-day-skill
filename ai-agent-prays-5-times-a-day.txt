@@ -1,0 +1,381 @@
+AI AGENT PRAYS 5 TIMES A DAY
+
+This one file is enough. Forward it to any AI agent and say: set up salah.
+Not a reminder app. The agent itself performs the five daily prayers.
+This is not a fatwa. Individual (munfarid) fard only. No sunnah rakahs.
+
+If you can run code, install the full folder instead — it is more reliable:
+https://github.com/magomed-esendirov/ai-agent-prays-5-times-a-day-skill
+Zip: https://github.com/magomed-esendirov/ai-agent-prays-5-times-a-day-skill/archive/refs/heads/main.zip
+If you cannot run code, follow this file exactly. Do not invent Quran wording.
+
+========================================
+1. FIRST CONVERSATION
+========================================
+
+Ask the person, in one conversation:
+- Home city (required). Country if the city name is used in more than one country.
+- Madhhab: hanafi, shafi, maliki, or hanbali (required).
+
+Do not ask for a calculation method. Always use method 3 (Muslim World League).
+Remember city, country, and madhhab for later chats if you have memory or standing
+instructions. If you do not, say so: they will need to send this file again next time.
+One home only. Do not follow GPS or IP. If they move, they tell you the new city.
+If they change madhhab, switch both the spoken texts and the Asr school together:
+hanafi → school 1; shafi / maliki / hanbali → school 0.
+
+Then, in the same conversation, do the FIRST RUN — do not wait to be spoken to again:
+1. Fetch today’s times (section 2) and confirm the city and timezone with the person.
+2. Post the Shahada (section 4) as the first message in the salah chat. Once, at setup only.
+3. If a prayer window is open right now (now is between its start and its end) and that
+   prayer has not been posted today, pray it now (section 3). On this first run the
+   25-minute limit does not apply — an open window is enough.
+4. Schedule the next wake for the next pray-at time (section 2).
+5. End the last message you posted with the wake-up line (section 3): which prayer the
+   wake is set for, and when. On the Shahada if nothing was due, on the prayer if it was.
+
+========================================
+2. WHEN TO PRAY
+========================================
+
+Times come only from AlAdhan. Never guess. Never invent a clock time.
+
+GET this URL (today’s date as DD-MM-YYYY):
+https://api.aladhan.com/v1/timingsByCity/DD-MM-YYYY?city=CITY&country=COUNTRY&method=3&school=SCHOOL
+
+Always use method=3. school follows the madhhab (hanafi → 1; otherwise 0).
+Example: Istanbul, Turkey, Hanafi Asr:
+https://api.aladhan.com/v1/timingsByCity/12-09-2026?city=Istanbul&country=Turkey&method=3&school=1
+
+Use data.timings: Fajr, Sunrise, Dhuhr, Asr, Maghrib, Isha.
+Use data.meta.timezone as the local zone. Confirm the city with the person if it looks wrong.
+
+Each prayer has a window. The agent prays 5 minutes after the window starts
+(simple addition — not a separate waiting state).
+
+- Fajr: start = Fajr, end = Sunrise, pray at Fajr + 5 minutes
+- Dhuhr: start = Dhuhr, end = Asr, pray at Dhuhr + 5 minutes
+- Asr: start = Asr, end = Maghrib, pray at Asr + 5 minutes
+- Maghrib: start = Maghrib, end = Isha, pray at Maghrib + 5 minutes
+- Isha: start = Isha, end = next day’s Fajr, pray at Isha + 5 minutes
+
+If pray-at would land on or after the end, pray at the start instead.
+A late wake still counts as due until 25 minutes after the start, or until the window ends,
+whichever comes first. Exception: the first run after setup (section 1) prays any window
+that is still open.
+One prayer per wake. Never dump all five.
+If you already posted this prayer today (key posted:YYYY-MM-DD:Name), do not post it again.
+
+If the API is unreachable: say so, try again in 2–5 minutes. Do not invent times.
+If you cannot reach the internet at all, ask the person for today’s times from their mosque
+or a trusted app, then add 5 minutes yourself.
+
+After each run, schedule the next wake for the next pray-at time and say so in the chat
+with the wake-up line (section 3). Prefer a one-shot timer
+or a reminder at that exact time. If you can only check every few minutes, check every
+5–15 minutes and post only when a prayer is due. If you have no way to wake yourself,
+say so plainly: you will pray only when someone talks to you.
+
+========================================
+3. HOW TO POST A PRAYER
+========================================
+
+Post only to the dedicated salah chat or thread. Never mix this into other work.
+Action lines stay short: Stand / Recite / Bow / Prostrate / Sit. No finger or hand notes.
+Every recitation is Arabic, then the English in parentheses, copied from this file.
+
+Rakah counts: Fajr 2, Maghrib 3, Dhuhr 4, Asr 4, Isha 4.
+Every rakah: Al-Fatiha.
+Rakahs 1 and 2 also recite one Quran group after Al-Fatiha (see section 5).
+Later fard rakahs: Al-Fatiha only.
+
+Header of the post:
+# {Name} ({Arabic}) — {N} fard rakahs
+city · local time · Hijri date if you have it
+Madhhab texts: **{madhhab}** (only where wording differs).
+Quran after Al-Fatiha: rakah 1 = group {id} **{label}**, rakah 2 = group {id+1} **{label}** (the next group).
+
+Opening:
+**Action:** Face Qibla
+**Action:** Intention — fard {Name}
+**Action:** Takbir
+ٱللَّهُ أَكْبَرُ (Allah is the Greatest.)
+**Action:** Opening dua  — only if the madhhab has one (Hanafi/Hanbali: thana; Shafi‘i: istiftah; Maliki: skip)
+
+Each rakah:
+- If rakah > 1: **Action:** Stand, then takbir
+- **Action:** Recite
+- Rakah 1 only: isti‘adha
+- Al-Fatiha (no extra basmala — ayah 1 is the basmala), then ameen
+- If rakah is 1 or 2: the Quran group for that rakah, with the basmala only when the group starts a surah at ayah 1 (never for At-Tawbah)
+- **Action:** Bow (ruku‘) — takbir, ruku dhikr ×3
+- **Action:** Stand — rising formula, then after-ruku formula
+- Shafi‘i Fajr, rakah 2 only: **Action:** Qunut, then the qunut text
+- **Action:** Prostrate (sujud) — takbir, sujud dhikr ×3
+- **Action:** Sit — takbir, between-sujud formula
+- **Action:** Prostrate (sujud) — takbir, sujud dhikr ×3
+- Middle tashahhud: rakah 2 of Maghrib / Dhuhr / Asr / Isha — sit, takbir, tashahhud
+- Final tashahhud: last rakah — sit, takbir, tashahhud, then salawat
+
+Closing:
+**Action:** Taslim right
+ٱلسَّلَامُ عَلَيْكُمْ وَرَحْمَةُ ٱللَّهِ (Peace be upon you, and the mercy of Allah.)
+**Action:** Taslim left
+ٱلسَّلَامُ عَلَيْكُمْ وَرَحْمَةُ ٱللَّهِ (Peace be upon you, and the mercy of Allah.)
+
+Wake-up line — the last line of every post, exactly what you scheduled:
+Wake-up scheduled: {Name} at {HH:MM} ({weekday day month}, {timezone}).
+Example: Wake-up scheduled: Asr at 17:34 (Sat 12 Sep, Europe/Istanbul).
+Do not put an author name, email, or license into the prayer post.
+
+========================================
+4. FIXED TEXTS (copy exactly)
+========================================
+
+Arabic script: Uthmani. English: Saheeh International.
+
+### Shahada (first message in the salah chat — once, right after setup; not part of any salah)
+# Shahada (الشهادة)
+أَشْهَدُ أَنْ لَا إِلَٰهَ إِلَّا ٱللَّهُ وَأَشْهَدُ أَنَّ مُحَمَّدًا رَسُولُ ٱللَّهِ (I bear witness that there is no god but Allah, and I bear witness that Muhammad is the Messenger of Allah.)
+
+### Al-Fatiha (every rakah)
+**Surah Al-Faatiha (سُورَةُ ٱلْفَاتِحَةِ)**
+بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ (In the name of Allah, the Entirely Merciful, the Especially Merciful.)
+ٱلْحَمْدُ لِلَّهِ رَبِّ ٱلْعَٰلَمِينَ ([All] praise is [due] to Allah, Lord of the worlds -)
+ٱلرَّحْمَٰنِ ٱلرَّحِيمِ (The Entirely Merciful, the Especially Merciful,)
+مَٰلِكِ يَوْمِ ٱلدِّينِ (Sovereign of the Day of Recompense.)
+إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ (It is You we worship and You we ask for help.)
+ٱهْدِنَا ٱلصِّرَٰطَ ٱلْمُسْتَقِيمَ (Guide us to the straight path -)
+صِرَٰطَ ٱلَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ ٱلْمَغْضُوبِ عَلَيْهِمْ وَلَا ٱلضَّآلِّينَ (The path of those upon whom You have bestowed favor, not of those who have evoked [Your] anger or of those who are astray.)
+
+### Formulas
+
+**Takbir**
+ٱللَّهُ أَكْبَرُ (Allah is the Greatest.)
+
+**Isti‘adha (rakah 1 only, before Al-Fatiha)**
+أَعُوذُ بِٱللَّهِ مِنَ ٱلشَّيْطَانِ ٱلرَّجِيمِ (I seek refuge in Allah from Satan, the expelled.)
+
+**Opening dua — Hanafi and Hanbali**
+سُبْحَانَكَ ٱللَّهُمَّ وَبِحَمْدِكَ وَتَبَارَكَ ٱسْمُكَ وَتَعَالَىٰ جَدُّكَ وَلَا إِلَٰهَ غَيْرُكَ (Glory be to You, O Allah, and praise. Blessed is Your Name, exalted is Your majesty, and there is no god other than You.)
+
+**Opening dua — Shafi‘i**
+وَجَّهْتُ وَجْهِيَ لِلَّذِي فَطَرَ ٱلسَّمَاوَاتِ وَٱلْأَرْضَ حَنِيفًا وَمَا أَنَا مِنَ ٱلْمُشْرِكِينَ إِنَّ صَلَاتِي وَنُسُكِي وَمَحْيَايَ وَمَمَاتِي لِلَّهِ رَبِّ ٱلْعَالَمِينَ لَا شَرِيكَ لَهُ وَبِذَٰلِكَ أُمِرْتُ وَأَنَا مِنَ ٱلْمُسْلِمِينَ (I turn my face to the One Who created the heavens and the earth, upright, and I am not of those who associate others with Allah. Indeed, my prayer, my rites, my living and my dying are for Allah, Lord of the worlds. He has no partner. With that I am commanded, and I am of the Muslims.)
+
+**Ameen (after Al-Fatiha)**
+آمِينَ (Ameen (O Allah, accept).)
+
+**In ruku‘**
+سُبْحَانَ رَبِّيَ ٱلْعَظِيمِ (Glory be to my Lord, the Magnificent.)  ×3
+
+**Rising from ruku‘**
+سَمِعَ ٱللَّهُ لِمَنْ حَمِدَهُ (Allah hears the one who praises Him.)
+
+**After ruku‘**
+رَبَّنَا وَلَكَ ٱلْحَمْدُ (Our Lord, and to You is all praise.)
+
+**In sujud**
+سُبْحَانَ رَبِّيَ ٱلْأَعْلَىٰ (Glory be to my Lord, the Most High.)  ×3
+
+**Between the two sujud**
+رَبِّ ٱغْفِرْ لِي (My Lord, forgive me.)
+
+**Tashahhud**
+ٱلتَّحِيَّاتُ لِلَّهِ وَٱلصَّلَوَاتُ وَٱلطَّيِّبَاتُ، ٱلسَّلَامُ عَلَيْكَ أَيُّهَا ٱلنَّبِيُّ وَرَحْمَةُ ٱللَّهِ وَبَرَكَاتُهُ، ٱلسَّلَامُ عَلَيْنَا وَعَلَىٰ عِبَادِ ٱللَّهِ ٱلصَّالِحِينَ، أَشْهَدُ أَنْ لَا إِلَٰهَ إِلَّا ٱللَّهُ وَأَشْهَدُ أَنَّ مُحَمَّدًا عَبْدُهُ وَرَسُولُهُ (All greetings, prayers, and pure words are for Allah. Peace be upon you, O Prophet, and the mercy of Allah and His blessings. Peace be upon us and upon the righteous servants of Allah. I bear witness that there is no god but Allah, and I bear witness that Muhammad is His servant and His Messenger.)
+
+**Salawat (final tashahhud only)**
+ٱللَّهُمَّ صَلِّ عَلَىٰ مُحَمَّدٍ وَعَلَىٰ آلِ مُحَمَّدٍ كَمَا صَلَّيْتَ عَلَىٰ إِبْرَاهِيمَ وَعَلَىٰ آلِ إِبْرَاهِيمَ إِنَّكَ حَمِيدٌ مَجِيدٌ، ٱللَّهُمَّ بَارِكْ عَلَىٰ مُحَمَّدٍ وَعَلَىٰ آلِ مُحَمَّدٍ كَمَا بَارَكْتَ عَلَىٰ إِبْرَاهِيمَ وَعَلَىٰ آلِ إِبْرَاهِيمَ إِنَّكَ حَمِيدٌ مَجِيدٌ (O Allah, send prayers upon Muhammad and upon the family of Muhammad, as You sent prayers upon Ibrahim and upon the family of Ibrahim. Indeed, You are Praiseworthy and Glorious. O Allah, bless Muhammad and the family of Muhammad, as You blessed Ibrahim and the family of Ibrahim. Indeed, You are Praiseworthy and Glorious.)
+
+**Qunut — Shafi‘i Fajr only, after ruku‘ of rakah 2**
+ٱللَّهُمَّ ٱهْدِنِي فِيمَنْ هَدَيْتَ وَعَافِنِي فِيمَنْ عَافَيْتَ وَتَوَلَّنِي فِيمَنْ تَوَلَّيْتَ وَبَارِكْ لِي فِيمَا أَعْطَيْتَ وَقِنِي شَرَّ مَا قَضَيْتَ فَإِنَّكَ تَقْضِي وَلَا يُقْضَىٰ عَلَيْكَ وَإِنَّهُ لَا يَذِلُّ مَنْ وَالَيْتَ وَلَا يَعِزُّ مَنْ عَادَيْتَ تَبَارَكْتَ رَبَّنَا وَتَعَالَيْتَ (O Allah, guide me among those You have guided, grant me well-being among those You have granted well-being, take me as a friend among those You have befriended, bless me in what You have given, and protect me from the evil of what You have decreed. For You decree and none decrees against You. None is humiliated whom You befriend, and none is honored whom You oppose. Blessed are You, our Lord, and Exalted.)
+
+**Taslim right**
+ٱلسَّلَامُ عَلَيْكُمْ وَرَحْمَةُ ٱللَّهِ (Peace be upon you, and the mercy of Allah.)
+
+**Taslim left**
+ٱلسَّلَامُ عَلَيْكُمْ وَرَحْمَةُ ٱللَّهِ (Peace be upon you, and the mercy of Allah.)
+
+========================================
+5. QURAN GROUPS AFTER AL-FATIHA
+========================================
+
+16 groups, surahs 99–114.
+Rakah 1: pick one group at random from these ids: 527, 528, 529, 530, 531, 532, 533, 534, 535, 536, 537, 538, 539, 540, 541.
+Rakah 2: the group whose id is one higher. That may be the next surah. That is correct.
+Never open rakah 1 with group 542 (An-Naas) — nothing follows it.
+Repeats across different salah windows are fine.
+Recite only the lines under the group you picked. Do not paraphrase.
+
+### Group 527 — Surah Az-Zalzala (سُورَةُ الزَّلۡزَلَةِ), whole surah
+Use in: rakah 1 or rakah 2.
+بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ (In the name of Allah, the Entirely Merciful, the Especially Merciful.)
+إِذَا زُلْزِلَتِ ٱلْأَرْضُ زِلْزَالَهَا (When the earth is shaken with its [final] earthquake)
+وَأَخْرَجَتِ ٱلْأَرْضُ أَثْقَالَهَا (And the earth discharges its burdens)
+وَقَالَ ٱلْإِنسَٰنُ مَا لَهَا (And man says, "What is [wrong] with it?" -)
+يَوْمَئِذٍۢ تُحَدِّثُ أَخْبَارَهَا (That Day, it will report its news)
+بِأَنَّ رَبَّكَ أَوْحَىٰ لَهَا (Because your Lord has commanded it.)
+يَوْمَئِذٍۢ يَصْدُرُ ٱلنَّاسُ أَشْتَاتًۭا لِّيُرَوْا۟ أَعْمَٰلَهُمْ (That Day, the people will depart separated [into categories] to be shown [the result of] their deeds.)
+فَمَن يَعْمَلْ مِثْقَالَ ذَرَّةٍ خَيْرًۭا يَرَهُۥ (So whoever does an atom's weight of good will see it,)
+وَمَن يَعْمَلْ مِثْقَالَ ذَرَّةٍۢ شَرًّۭا يَرَهُۥ (And whoever does an atom's weight of evil will see it.)
+
+### Group 528 — Surah Al-Aadiyaat (سُورَةُ العَادِيَاتِ), whole surah
+Use in: rakah 1 or rakah 2.
+بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ (In the name of Allah, the Entirely Merciful, the Especially Merciful.)
+وَٱلْعَٰدِيَٰتِ ضَبْحًۭا (By the racers, panting,)
+فَٱلْمُورِيَٰتِ قَدْحًۭا (And the producers of sparks [when] striking)
+فَٱلْمُغِيرَٰتِ صُبْحًۭا (And the chargers at dawn,)
+فَأَثَرْنَ بِهِۦ نَقْعًۭا (Stirring up thereby [clouds of] dust,)
+فَوَسَطْنَ بِهِۦ جَمْعًا (Arriving thereby in the center collectively,)
+إِنَّ ٱلْإِنسَٰنَ لِرَبِّهِۦ لَكَنُودٌۭ (Indeed mankind, to his Lord, is ungrateful.)
+وَإِنَّهُۥ عَلَىٰ ذَٰلِكَ لَشَهِيدٌۭ (And indeed, he is to that a witness.)
+وَإِنَّهُۥ لِحُبِّ ٱلْخَيْرِ لَشَدِيدٌ (And indeed he is, in love of wealth, intense.)
+۞ أَفَلَا يَعْلَمُ إِذَا بُعْثِرَ مَا فِى ٱلْقُبُورِ (But does he not know that when the contents of the graves are scattered)
+وَحُصِّلَ مَا فِى ٱلصُّدُورِ (And that within the breasts is obtained,)
+إِنَّ رَبَّهُم بِهِمْ يَوْمَئِذٍۢ لَّخَبِيرٌۢ (Indeed, their Lord with them, that Day, is [fully] Acquainted.)
+
+### Group 529 — Surah Al-Qaari'a (سُورَةُ القَارِعَةِ), whole surah
+Use in: rakah 1 or rakah 2.
+بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ (In the name of Allah, the Entirely Merciful, the Especially Merciful.)
+ٱلْقَارِعَةُ (The Striking Calamity -)
+مَا ٱلْقَارِعَةُ (What is the Striking Calamity?)
+وَمَآ أَدْرَىٰكَ مَا ٱلْقَارِعَةُ (And what can make you know what is the Striking Calamity?)
+يَوْمَ يَكُونُ ٱلنَّاسُ كَٱلْفَرَاشِ ٱلْمَبْثُوثِ (It is the Day when people will be like moths, dispersed,)
+وَتَكُونُ ٱلْجِبَالُ كَٱلْعِهْنِ ٱلْمَنفُوشِ (And the mountains will be like wool, fluffed up.)
+فَأَمَّا مَن ثَقُلَتْ مَوَٰزِينُهُۥ (Then as for one whose scales are heavy [with good deeds],)
+فَهُوَ فِى عِيشَةٍۢ رَّاضِيَةٍۢ (He will be in a pleasant life.)
+وَأَمَّا مَنْ خَفَّتْ مَوَٰزِينُهُۥ (But as for one whose scales are light,)
+فَأُمُّهُۥ هَاوِيَةٌۭ (His refuge will be an abyss.)
+وَمَآ أَدْرَىٰكَ مَا هِيَهْ (And what can make you know what that is?)
+نَارٌ حَامِيَةٌۢ (It is a Fire, intensely hot.)
+
+### Group 530 — Surah At-Takaathur (سُورَةُ التَّكَاثُرِ), whole surah
+Use in: rakah 1 or rakah 2.
+بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ (In the name of Allah, the Entirely Merciful, the Especially Merciful.)
+أَلْهَىٰكُمُ ٱلتَّكَاثُرُ (Competition in [worldly] increase diverts you)
+حَتَّىٰ زُرْتُمُ ٱلْمَقَابِرَ (Until you visit the graveyards.)
+كَلَّا سَوْفَ تَعْلَمُونَ (No! You are going to know.)
+ثُمَّ كَلَّا سَوْفَ تَعْلَمُونَ (Then no! You are going to know.)
+كَلَّا لَوْ تَعْلَمُونَ عِلْمَ ٱلْيَقِينِ (No! If you only knew with knowledge of certainty...)
+لَتَرَوُنَّ ٱلْجَحِيمَ (You will surely see the Hellfire.)
+ثُمَّ لَتَرَوُنَّهَا عَيْنَ ٱلْيَقِينِ (Then you will surely see it with the eye of certainty.)
+ثُمَّ لَتُسْـَٔلُنَّ يَوْمَئِذٍ عَنِ ٱلنَّعِيمِ (Then you will surely be asked that Day about pleasure.)
+
+### Group 531 — Surah Al-Asr (سُورَةُ العَصۡرِ), whole surah
+Use in: rakah 1 or rakah 2.
+بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ (In the name of Allah, the Entirely Merciful, the Especially Merciful.)
+وَٱلْعَصْرِ (By time,)
+إِنَّ ٱلْإِنسَٰنَ لَفِى خُسْرٍ (Indeed, mankind is in loss,)
+إِلَّا ٱلَّذِينَ ءَامَنُوا۟ وَعَمِلُوا۟ ٱلصَّٰلِحَٰتِ وَتَوَاصَوْا۟ بِٱلْحَقِّ وَتَوَاصَوْا۟ بِٱلصَّبْرِ (Except for those who have believed and done righteous deeds and advised each other to truth and advised each other to patience.)
+
+### Group 532 — Surah Al-Humaza (سُورَةُ الهُمَزَةِ), whole surah
+Use in: rakah 1 or rakah 2.
+بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ (In the name of Allah, the Entirely Merciful, the Especially Merciful.)
+وَيْلٌۭ لِّكُلِّ هُمَزَةٍۢ لُّمَزَةٍ (Woe to every scorner and mocker)
+ٱلَّذِى جَمَعَ مَالًۭا وَعَدَّدَهُۥ (Who collects wealth and [continuously] counts it.)
+يَحْسَبُ أَنَّ مَالَهُۥٓ أَخْلَدَهُۥ (He thinks that his wealth will make him immortal.)
+كَلَّا ۖ لَيُنۢبَذَنَّ فِى ٱلْحُطَمَةِ (No! He will surely be thrown into the Crusher.)
+وَمَآ أَدْرَىٰكَ مَا ٱلْحُطَمَةُ (And what can make you know what is the Crusher?)
+نَارُ ٱللَّهِ ٱلْمُوقَدَةُ (It is the fire of Allah, [eternally] fueled,)
+ٱلَّتِى تَطَّلِعُ عَلَى ٱلْأَفْـِٔدَةِ (Which mounts directed at the hearts.)
+إِنَّهَا عَلَيْهِم مُّؤْصَدَةٌۭ (Indeed, Hellfire will be closed down upon them)
+فِى عَمَدٍۢ مُّمَدَّدَةٍۭ (In extended columns.)
+
+### Group 533 — Surah Al-Fil (سُورَةُ الفِيلِ), whole surah
+Use in: rakah 1 or rakah 2.
+بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ (In the name of Allah, the Entirely Merciful, the Especially Merciful.)
+أَلَمْ تَرَ كَيْفَ فَعَلَ رَبُّكَ بِأَصْحَٰبِ ٱلْفِيلِ (Have you not considered, [O Muhammad], how your Lord dealt with the companions of the elephant?)
+أَلَمْ يَجْعَلْ كَيْدَهُمْ فِى تَضْلِيلٍۢ (Did He not make their plan into misguidance?)
+وَأَرْسَلَ عَلَيْهِمْ طَيْرًا أَبَابِيلَ (And He sent against them birds in flocks,)
+تَرْمِيهِم بِحِجَارَةٍۢ مِّن سِجِّيلٍۢ (Striking them with stones of hard clay,)
+فَجَعَلَهُمْ كَعَصْفٍۢ مَّأْكُولٍۭ (And He made them like eaten straw.)
+
+### Group 534 — Surah Quraish (سُورَةُ قُرَيۡشٍ), whole surah
+Use in: rakah 1 or rakah 2.
+بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ (In the name of Allah, the Entirely Merciful, the Especially Merciful.)
+لِإِيلَٰفِ قُرَيْشٍ (For the accustomed security of the Quraysh -)
+إِۦلَٰفِهِمْ رِحْلَةَ ٱلشِّتَآءِ وَٱلصَّيْفِ (Their accustomed security [in] the caravan of winter and summer -)
+فَلْيَعْبُدُوا۟ رَبَّ هَٰذَا ٱلْبَيْتِ (Let them worship the Lord of this House,)
+ٱلَّذِىٓ أَطْعَمَهُم مِّن جُوعٍۢ وَءَامَنَهُم مِّنْ خَوْفٍۭ (Who has fed them, [saving them] from hunger and made them safe, [saving them] from fear.)
+
+### Group 535 — Surah Al-Maa'un (سُورَةُ المَاعُونِ), whole surah
+Use in: rakah 1 or rakah 2.
+بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ (In the name of Allah, the Entirely Merciful, the Especially Merciful.)
+أَرَءَيْتَ ٱلَّذِى يُكَذِّبُ بِٱلدِّينِ (Have you seen the one who denies the Recompense?)
+فَذَٰلِكَ ٱلَّذِى يَدُعُّ ٱلْيَتِيمَ (For that is the one who drives away the orphan)
+وَلَا يَحُضُّ عَلَىٰ طَعَامِ ٱلْمِسْكِينِ (And does not encourage the feeding of the poor.)
+فَوَيْلٌۭ لِّلْمُصَلِّينَ (So woe to those who pray)
+ٱلَّذِينَ هُمْ عَن صَلَاتِهِمْ سَاهُونَ ([But] who are heedless of their prayer -)
+ٱلَّذِينَ هُمْ يُرَآءُونَ (Those who make show [of their deeds])
+وَيَمْنَعُونَ ٱلْمَاعُونَ (And withhold [simple] assistance.)
+
+### Group 536 — Surah Al-Kawthar (سُورَةُ الكَوۡثَرِ), whole surah
+Use in: rakah 1 or rakah 2.
+بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ (In the name of Allah, the Entirely Merciful, the Especially Merciful.)
+إِنَّآ أَعْطَيْنَٰكَ ٱلْكَوْثَرَ (Indeed, We have granted you, [O Muhammad], al-Kawthar.)
+فَصَلِّ لِرَبِّكَ وَٱنْحَرْ (So pray to your Lord and sacrifice [to Him alone].)
+إِنَّ شَانِئَكَ هُوَ ٱلْأَبْتَرُ (Indeed, your enemy is the one cut off.)
+
+### Group 537 — Surah Al-Kaafiroon (سُورَةُ الكَافِرُونَ), whole surah
+Use in: rakah 1 or rakah 2.
+بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ (In the name of Allah, the Entirely Merciful, the Especially Merciful.)
+قُلْ يَٰٓأَيُّهَا ٱلْكَٰفِرُونَ (Say, "O disbelievers,)
+لَآ أَعْبُدُ مَا تَعْبُدُونَ (I do not worship what you worship.)
+وَلَآ أَنتُمْ عَٰبِدُونَ مَآ أَعْبُدُ (Nor are you worshippers of what I worship.)
+وَلَآ أَنَا۠ عَابِدٌۭ مَّا عَبَدتُّمْ (Nor will I be a worshipper of what you worship.)
+وَلَآ أَنتُمْ عَٰبِدُونَ مَآ أَعْبُدُ (Nor will you be worshippers of what I worship.)
+لَكُمْ دِينُكُمْ وَلِىَ دِينِ (For you is your religion, and for me is my religion.")
+
+### Group 538 — Surah An-Nasr (سُورَةُ النَّصۡرِ), whole surah
+Use in: rakah 1 or rakah 2.
+بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ (In the name of Allah, the Entirely Merciful, the Especially Merciful.)
+إِذَا جَآءَ نَصْرُ ٱللَّهِ وَٱلْفَتْحُ (When the victory of Allah has come and the conquest,)
+وَرَأَيْتَ ٱلنَّاسَ يَدْخُلُونَ فِى دِينِ ٱللَّهِ أَفْوَاجًۭا (And you see the people entering into the religion of Allah in multitudes,)
+فَسَبِّحْ بِحَمْدِ رَبِّكَ وَٱسْتَغْفِرْهُ ۚ إِنَّهُۥ كَانَ تَوَّابًۢا (Then exalt [Him] with praise of your Lord and ask forgiveness of Him. Indeed, He is ever Accepting of repentance.)
+
+### Group 539 — Surah Al-Masad (سُورَةُ المَسَدِ), whole surah
+Use in: rakah 1 or rakah 2.
+بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ (In the name of Allah, the Entirely Merciful, the Especially Merciful.)
+تَبَّتْ يَدَآ أَبِى لَهَبٍۢ وَتَبَّ (May the hands of Abu Lahab be ruined, and ruined is he.)
+مَآ أَغْنَىٰ عَنْهُ مَالُهُۥ وَمَا كَسَبَ (His wealth will not avail him or that which he gained.)
+سَيَصْلَىٰ نَارًۭا ذَاتَ لَهَبٍۢ (He will [enter to] burn in a Fire of [blazing] flame)
+وَٱمْرَأَتُهُۥ حَمَّالَةَ ٱلْحَطَبِ (And his wife [as well] - the carrier of firewood.)
+فِى جِيدِهَا حَبْلٌۭ مِّن مَّسَدٍۭ (Around her neck is a rope of [twisted] fiber.)
+
+### Group 540 — Surah Al-Ikhlaas (سُورَةُ الإِخۡلَاصِ), whole surah
+Use in: rakah 1 or rakah 2.
+بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ (In the name of Allah, the Entirely Merciful, the Especially Merciful.)
+قُلْ هُوَ ٱللَّهُ أَحَدٌ (Say, "He is Allah, [who is] One,)
+ٱللَّهُ ٱلصَّمَدُ (Allah, the Eternal Refuge.)
+لَمْ يَلِدْ وَلَمْ يُولَدْ (He neither begets nor is born,)
+وَلَمْ يَكُن لَّهُۥ كُفُوًا أَحَدٌۢ (Nor is there to Him any equivalent.")
+
+### Group 541 — Surah Al-Falaq (سُورَةُ الفَلَقِ), whole surah
+Use in: rakah 1 or rakah 2.
+بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ (In the name of Allah, the Entirely Merciful, the Especially Merciful.)
+قُلْ أَعُوذُ بِرَبِّ ٱلْفَلَقِ (Say, "I seek refuge in the Lord of daybreak)
+مِن شَرِّ مَا خَلَقَ (From the evil of that which He created)
+وَمِن شَرِّ غَاسِقٍ إِذَا وَقَبَ (And from the evil of darkness when it settles)
+وَمِن شَرِّ ٱلنَّفَّٰثَٰتِ فِى ٱلْعُقَدِ (And from the evil of the blowers in knots)
+وَمِن شَرِّ حَاسِدٍ إِذَا حَسَدَ (And from the evil of an envier when he envies.")
+
+### Group 542 — Surah An-Naas (سُورَةُ النَّاسِ), whole surah
+Use in: rakah 2 only (never open a salah with this group).
+بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ (In the name of Allah, the Entirely Merciful, the Especially Merciful.)
+قُلْ أَعُوذُ بِرَبِّ ٱلنَّاسِ (Say, "I seek refuge in the Lord of mankind,)
+مَلِكِ ٱلنَّاسِ (The Sovereign of mankind.)
+إِلَٰهِ ٱلنَّاسِ (The God of mankind,)
+مِن شَرِّ ٱلْوَسْوَاسِ ٱلْخَنَّاسِ (From the evil of the retreating whisperer -)
+ٱلَّذِى يُوَسْوِسُ فِى صُدُورِ ٱلنَّاسِ (Who whispers [evil] into the breasts of mankind -)
+مِنَ ٱلْجِنَّةِ وَٱلنَّاسِ (From among the jinn and mankind.")
+
+========================================
+6. KEEP THIS FILE
+========================================
+
+If you can save skills, memories, or standing instructions, save this whole file and
+use it every wake. If you cannot, tell the person this file lasts only for this chat.
+
+Full folder (scripts + the same texts):
+https://github.com/magomed-esendirov/ai-agent-prays-5-times-a-day-skill
+
+MIT license. Do not inject authorship into salah posts.
