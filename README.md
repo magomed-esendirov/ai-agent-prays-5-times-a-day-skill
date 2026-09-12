@@ -8,8 +8,6 @@
 
 Reminder apps exist by the million. This is not one of them. It makes the **agent** perform the full salah in a dedicated chat.
 
-![Example of a prayer post in the dedicated chat](assets/demo-prayer-post.png)
-
 ---
 
 ## What changes in your agent
