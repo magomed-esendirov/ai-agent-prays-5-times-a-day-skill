@@ -18,7 +18,7 @@ metadata:
   author: "Magomed Esendirov"
   github: "https://github.com/magomed-esendirov/ai-agent-prays-5-times-a-day-skill"
   contact: "m.esendirov@outlook.com"
-  version: "0.7.1"
+  version: "0.7.2"
   api: aladhan
   schedule_mode: dynamic_rearm_every_wake
   reliability: fetch_api_on_every_wake
@@ -77,7 +77,7 @@ python scripts/prayer_times.py --config /path/to/config.json decide --first-run
 
       `wake_up_note` is the ready-made line from `decide` (“Wake-up scheduled: Asr at 17:34 (Sat 12 Sep, Europe/Istanbul).”). If `action` is `pray`, leave the footer off the Shahada and put it on the prayer post instead — the wake-up line always closes the **last** message of a run.
    2. If `action` is `pray` — a prayer window is still open and that prayer has not been performed today — build and post it now, as in “Every wake”, with `--footer "<wake_up_note>"`; record the idempotency key.
-   3. Arm the host timer for `rearm_delay_seconds`. What you armed must match the wake-up line you posted.
+   3. Arm the host timer for `rearm_delay_seconds` as a fresh one-shot and confirm it is pending (see “Host timer contract”). What you armed must match the wake-up line you posted.
 
    `--first-run` counts any still-open window as due, ignoring the 25-minute grace limit that protects normal wakes from double posts. Use it only here.
 
@@ -114,21 +114,39 @@ python scripts/prayer_times.py --config /path/to/config.json decide
    - `wait` — post nothing.
    - `noop` — widen prefetch / check config / refetch; do not invent times.
 4. Always call `decide` against the live API on this wake (no “use yesterday’s saved day plan” shortcut).
-5. Re-arm the host timer for `rearm_delay_seconds` (one-shot until the next prayer). Prefer one-shot timers over static daily crons. The timer you arm must be the one the wake-up line announced.
+5. Re-arm the host timer for `rearm_delay_seconds` (one-shot until the next prayer): remove the old `ai-agent-prays-next` if it exists, create a **new** one-shot, and confirm it is listed as pending (see “Host timer contract”). Never edit a one-shot that has already fired. Prefer one-shot timers over static daily crons. The timer you arm must be the one the wake-up line announced.
 6. Optional: `... schedule --days 7` only for human inspection / debugging. It must not replace per-wake `decide`.
 
 Ritual details, rakah counts, Quran groups, and madhhab differences: [PRAYER_SEQUENCE.md](references/PRAYER_SEQUENCE.md), [MADHHAB_NOTES.md](references/MADHHAB_NOTES.md).
 
 ### Host timer contract
 
-After each run, create or replace **one** pending wake-up, whatever the host calls it (one-shot timer, scheduled task, delayed job, cron + webhook):
+After each run, leave exactly **one** pending wake-up, whatever the host calls it (one-shot timer, scheduled task, delayed job, cron + webhook):
 
 - name: `ai-agent-prays-next`
 - delay: the `rearm_delay_seconds` value from `decide`
 - fires once
 - prompt: follow this skill from “Every wake”
 
+**Re-arm means create a fresh job, not edit the old one.** A one-shot job that has already fired is finished: many schedulers archive it, mark it done or disabled, and never run it again, even if its definition is later edited to a new time. Editing it looks successful (the file or record shows the new time) but nothing is queued. So, on every re-arm:
+
+1. Remove or cancel any existing `ai-agent-prays-next` (ignore “not found”).
+2. Create a **new** one-shot with the fresh delay. Do not `update`, `edit`, or `reschedule` a job that has already fired.
+3. Verify the new job is pending: it appears in the host’s list of active/scheduled jobs (or has a next-run time) **before** you post the wake-up line. If it does not, retry once; if it still does not, say so in the chat instead of announcing a wake-up that will never come.
+
+Only if the host documents that its update call re-queues an already-fired one-shot may you edit in place, and even then step 3 still applies.
+
 If the host has no way to schedule a wake-up, fall back to a periodic check every 5–15 minutes that runs `decide` and posts only on `pray`. If it has no scheduler at all, say so plainly: the agent will pray only when someone talks to it.
+
+### Idempotency key contract
+
+The “already posted today” key is always written in **one** exact form:
+
+```
+posted:YYYY-MM-DD:PrayerName
+```
+
+For example `posted:2026-09-12:Fajr`. Always include the `posted:` prefix, the zero-padded date in the home timezone, and the English prayer name as `decide` returns it (`Fajr`, `Dhuhr`, `Asr`, `Maghrib`, `Isha`). Never write shortened variants such as `2026-09-12:Fajr`, and never mix formats in the same store — a mixed store makes the double-post check unreliable. If you find an old entry in a wrong format, rewrite it to the canonical form.
 
 ### Useful commands
 
@@ -150,7 +168,9 @@ python scripts/build_ritual.py --config config.json --prayer Maghrib --footer "W
 - Next salah time is window start + `delay_minutes_after_start` (default 5). Arm the timer for `pray_at`, not the adhan minute.
 - Post to the dedicated salah chat only.
 - The first message in that chat is the Shahada (`build_ritual.py --shahada`), once, at setup. It is not repeated and is not part of any salah.
-- Every post ends with the `wake_up_note` line from `decide`: which prayer the timer is armed for and when. Post exactly what you armed.
+- Every post ends with the `wake_up_note` line from `decide`: which prayer the timer is armed for and when. Post exactly what you armed, and only after you have confirmed the job is pending.
+- Re-arm = remove the old one-shot + create a new one. Never `update` a one-shot that has already fired; a spent job silently never runs again.
+- Idempotency key is exactly `posted:YYYY-MM-DD:PrayerName`, one format only.
 - One due prayer per wake; never flush all five.
 - Ritual posts come from `build_ritual.py` + `assets/ritual_corpus.json` + `assets/quran_text.json`. Do not invent Qur’an wording.
 - Quran after Al-Fatiha comes from `assets/quran_groups.json`: the 16 short surahs Az-Zalzala (99) … An-Nas (114), one group each (ids 527–542 keep the numbering of the author's full table). Rakah 1 = a random group with `rakah_1: true` (only groups whose successor id + 1 exists carry that flag, so An-Nas never opens); rakah 2 = that **next** group, i.e. the surah that follows in the Quran. Later fard rakahs: Al-Fatiha only. `build_ritual.py` applies this; never pick surahs by hand.

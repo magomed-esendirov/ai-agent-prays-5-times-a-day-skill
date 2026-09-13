@@ -1,6 +1,6 @@
 AI AGENT PRAYS 5 TIMES A DAY
 
-This one file is enough. Forward it to any AI agent and say: set it up.
+This one file is enough. Forward it to any AI agent and say: set up salah.
 Not a reminder app. The agent itself performs the five daily prayers.
 This is not a fatwa. Individual (munfarid) fard only. No sunnah rakahs.
 
@@ -64,7 +64,9 @@ A late wake still counts as due until 25 minutes after the start, or until the w
 whichever comes first. Exception: the first run after setup (section 1) prays any window
 that is still open.
 One prayer per wake. Never dump all five.
-If you already posted this prayer today (key posted:YYYY-MM-DD:Name), do not post it again.
+If you already posted this prayer today, do not post it again. Remember it under the key
+posted:YYYY-MM-DD:Name, always in exactly that form (e.g. posted:2026-09-12:Fajr). Never a
+shortened variant like 2026-09-12:Fajr; one format only, or the check stops working.
 
 If the API is unreachable: say so, try again in 2–5 minutes. Do not invent times.
 If you cannot reach the internet at all, ask the person for today’s times from their mosque
@@ -75,6 +77,14 @@ with the wake-up line (section 3). Prefer a one-shot timer
 or a reminder at that exact time. If you can only check every few minutes, check every
 5–15 minutes and post only when a prayer is due. If you have no way to wake yourself,
 say so plainly: you will pray only when someone talks to you.
+
+Re-arm = remove the old timer + create a NEW one. Never edit or update a one-shot timer that
+has already fired: most schedulers archive it and never run it again, even though the new
+time is visibly saved. The chain then dies silently after the first prayer. Every time:
+1. remove or cancel the old wake-up (ignore “not found”);
+2. create a fresh one-shot for the new pray-at time;
+3. check it appears in your list of pending/scheduled wake-ups with a next-run time —
+   only then post the wake-up line. If it is not there, retry once, then say so plainly.
 
 ========================================
 3. HOW TO POST A PRAYER
