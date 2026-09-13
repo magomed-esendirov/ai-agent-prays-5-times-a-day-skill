@@ -56,4 +56,4 @@ See [MADHHAB_NOTES.md](MADHHAB_NOTES.md).
 
 ## Idempotency
 
-`posted:YYYY-MM-DD:PrayerName`
+`posted:YYYY-MM-DD:PrayerName` — exactly this one form, e.g. `posted:2026-09-12:Fajr`. Never a shortened variant, never two formats in the same store.
